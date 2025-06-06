@@ -1,3 +1,20 @@
+# Firely 100ms Demo
+
+This example shows how to integrate the [100ms](https://100ms.live) video SDK
+with a React frontend and a small Node backend. The backend creates rooms using
+the 100ms Management API and generates JWT tokens which the React app uses to
+join a room.
+
+## Setup
+
+1. Copy `.env.example` to `.env` and fill in your `HMS_ACCESS_KEY` and
+   `HMS_SECRET` from the 100ms dashboard.
+2. Install dependencies with `npm install`.
+3. Start the backend with `npm run server` and the React app with `npm start`.
+
+The React app fetches a token from `http://localhost:3001/token` and joins the
+specified room using the `@100mslive/react-sdk`.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
