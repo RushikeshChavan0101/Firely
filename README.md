@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Role Based Participation
+
+This demo shows how you can integrate [100ms](https://www.100ms.live/) with React
+while supporting multiple roles in the room. The available roles are Judge,
+Speaker, Moderator and Audience. Specific controls are rendered depending on the
+selected role. For example only Judges see the **Score Speaker** button and only
+Speakers see the **Speak** button.
+
 ## Available Scripts
 
 In the project directory, you can run:
