@@ -1,3 +1,37 @@
+# Custom 100ms Setup with Role Based Permissions
+
+This project demonstrates how to create rooms on demand using the 100ms
+Management API, generate JWT tokens on a small Express backend and join the
+room from a React client using the 100ms React SDK. It also illustrates four
+custom roles (**Judge**, **Speaker**, **Moderator**, and **Audience**) with
+simple permission controls.
+
+## Running the example
+
+1. In the `server` folder create a `.env` file with your API keys:
+
+   ```bash
+   CLIENT_ID=your_management_client_id
+   CLIENT_SECRET=your_management_client_secret
+   APP_ACCESS_KEY=your_app_access_key
+   APP_SECRET=your_app_secret
+   ```
+
+2. Start the backend server:
+
+   ```bash
+   node server/index.js
+   ```
+
+3. From another terminal start the React app:
+
+   ```bash
+   npm start
+   ```
+
+Selecting a role and clicking **Join Room** will create a room, generate a JWT
+for the chosen role and connect using the 100ms SDK.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
