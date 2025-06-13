@@ -18,6 +18,12 @@ let currentRoom = null;
 let roomPromise = null; // ensure only one room is created at a time
 // In-memory storage for speaker scores
 const scores = {};
+// Speaking order management
+const speakingOrder = {
+  currentSpeaker: null,
+  queue: [],
+  isSpeaking: false
+};
 // Mapping from app roles to 100ms roles
 const ROLE_MAP = {
   judge: 'host',
@@ -135,6 +141,62 @@ app.post('/api/score', (req, res) => {
     console.error('Score submission failed:', err.message);
     res.status(400).json({ error: 'Score submission failed' });
   }
+});
+
+// Endpoint for moderator to manage speaking order
+app.post('/api/speaking-order', (req, res) => {
+  try {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.APP_SECRET);
+    if (decoded.app_role !== 'moderator') {
+      return res.status(403).json({ error: 'Only moderator can manage speaking order' });
+    }
+
+    const { action, speakerId } = req.body;
+    
+    switch (action) {
+      case 'add':
+        if (!speakingOrder.queue.includes(speakerId)) {
+          speakingOrder.queue.push(speakerId);
+        }
+        break;
+      case 'remove':
+        speakingOrder.queue = speakingOrder.queue.filter(id => id !== speakerId);
+        break;
+      case 'next':
+        if (speakingOrder.queue.length > 0) {
+          speakingOrder.currentSpeaker = speakingOrder.queue.shift();
+          speakingOrder.isSpeaking = true;
+        }
+        break;
+      case 'end':
+        speakingOrder.isSpeaking = false;
+        speakingOrder.currentSpeaker = null;
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    res.json({ 
+      success: true, 
+      currentSpeaker: speakingOrder.currentSpeaker,
+      queue: speakingOrder.queue,
+      isSpeaking: speakingOrder.isSpeaking
+    });
+  } catch (err) {
+    console.error('Speaking order management failed:', err.message);
+    res.status(400).json({ error: 'Speaking order management failed' });
+  }
+});
+
+// Endpoint to get current speaking order status
+app.get('/api/speaking-order', (req, res) => {
+  res.json({
+    currentSpeaker: speakingOrder.currentSpeaker,
+    queue: speakingOrder.queue,
+    isSpeaking: speakingOrder.isSpeaking
+  });
 });
 
 app.listen(PORT, () => {
